@@ -14,15 +14,17 @@ export function App() {
   const [exchangeRate, setExchangeRate] = useState()
 
 
-  console.log(exchangeRate)
-console.log(currencyOption)
+ 
+
   useEffect(async () => {
     const resp = await axios .get(`${apiURL}?base=USD`)
-    const secondCurrency = (resp.data.rates)[1]
-    setCurrencyOption([(resp.data.rates)[1],...Object.keys(resp.data.rates)])
-    setFromCurrency ((resp.data.rates)[0])
-    setToCurrency(secondCurrency)
-    setExchangeRate(resp.data.rates[secondCurrency])
+    const firstCurrency = (resp.data.rates)[0]
+    setCurrencyOption([resp.data.base,...Object.keys(resp.data.rates)])
+    setFromCurrency (resp.data.base)
+    setToCurrency(firstCurrency)
+    setExchangeRate(resp.data.rates[firstCurrency])
+    console.log(resp.data)
+    console.log(exchangeRate)
     }, [])
 
 

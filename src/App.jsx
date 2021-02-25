@@ -13,20 +13,30 @@ export function App() {
   const [toCurrency, setToCurrency] = useState()
   const [exchangeRate, setExchangeRate] = useState()
 
+ 
+  
+
+  function handleFromAmountChange(event) {
+    setAmount(event.target.value)
+  }
+  function handleToAmountChange(event) {
+    setAmount(event.target.value)
+  }
 
  
 
   useEffect(async () => {
     const resp = await axios .get(`${apiURL}?base=USD`)
-    const firstCurrency = (resp.data.rates)[0]
-    setCurrencyOption([resp.data.base,...Object.keys(resp.data.rates)])
+    setCurrencyOption([null, ...Object.keys(resp.data.rates)])
     setFromCurrency (resp.data.base)
-    setToCurrency(firstCurrency)
-    setExchangeRate(resp.data.rates[firstCurrency])
-    console.log(resp.data)
-    console.log(exchangeRate)
-    }, [])
 
+      if(fromCurrency && toCurrency != null ){
+      setExchangeRate(resp.data.rates[toCurrency])
+      }
+    }, [fromCurrency, toCurrency])
+
+  let fromAmount = amount
+  let toAmount = (amount * exchangeRate).toFixed(2)
 
   return (
     <>
@@ -34,13 +44,16 @@ export function App() {
         <h1>Currency Converter</h1>
       </header>
       <CurrencyRowUsd
-      currencyOption
       selectCurrency={fromCurrency}
+      amount={fromAmount}
+      onChangeAmount={handleFromAmountChange}
       />
       <div className="equals">=</div>
       <CurrencyRowOther
       currencyOption={currencyOption}
       selectCurrency={toCurrency}
+      amount={toAmount}
+      onChangeAmount={handleToAmountChange}
       onChangeCurrency={event => setToCurrency(event.target.value)}
       />
     </>
